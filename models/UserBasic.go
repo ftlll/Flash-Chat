@@ -1,6 +1,12 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"flashchat/utils"
+	"fmt"
+	"time"
+
+	"gorm.io/gorm"
+)
 
 type UserBasic struct {
 	gorm.Model
@@ -10,13 +16,22 @@ type UserBasic struct {
 	Identity      string
 	ClientIP      string
 	ClientPort    string
-	LastLogin     uint64
-	HeartBeatTime uint64
-	LogOut        uint64
+	LastLogin     time.Time
+	HeartBeatTime time.Time
+	LogOutTime    time.Time
 	IsLogout      bool
 	DeviceInfo    string
 }
 
 func (table *UserBasic) TableName() string {
 	return "user_basic"
+}
+
+func GetUserList() []*UserBasic {
+	data := make([]*UserBasic, 10)
+	utils.DB.Find(&data)
+	for _, v := range data {
+		fmt.Println(v)
+	}
+	return data
 }
