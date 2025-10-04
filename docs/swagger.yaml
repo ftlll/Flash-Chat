@@ -1,0 +1,29 @@
+info:
+  contact: {}
+paths:
+  /index:
+    get:
+      description: ping testing
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: ping testing
+      tags:
+      - Ping
+  /users/getUsers:
+    get:
+      description: get all users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      tags:
+      - Users
+swagger: "2.0"

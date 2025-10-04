@@ -27,7 +27,7 @@ func (table *UserBasic) TableName() string {
 	return "user_basic"
 }
 
-func GetUserList() []*UserBasic {
+func GetUsers() []*UserBasic {
 	data := make([]*UserBasic, 10)
 	utils.DB.Find(&data)
 	for _, v := range data {
