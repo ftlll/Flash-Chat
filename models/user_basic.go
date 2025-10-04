@@ -2,7 +2,6 @@ package models
 
 import (
 	"flashchat/utils"
-	"fmt"
 	"time"
 
 	"gorm.io/gorm"
@@ -28,10 +27,18 @@ func (table *UserBasic) TableName() string {
 }
 
 func GetUsers() []*UserBasic {
-	data := make([]*UserBasic, 10)
-	utils.DB.Find(&data)
-	for _, v := range data {
-		fmt.Println(v)
-	}
-	return data
+	users := make([]*UserBasic, 10)
+	utils.DB.Find(&users)
+	// for _, v := range users {
+	// 	fmt.Println(v)
+	// }
+	return users
+}
+
+func CreateUsers(user UserBasic) *gorm.DB {
+	return utils.DB.Create(&user)
+}
+
+func DeleteUser(user UserBasic) *gorm.DB {
+	return utils.DB.Delete(&user)
 }
