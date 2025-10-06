@@ -85,4 +85,29 @@ paths:
             type: ""
       tags:
       - Users
+  /users/updateUser:
+    post:
+      description: update existing user by ID
+      parameters:
+      - description: id
+        in: formData
+        name: id
+        type: string
+      - description: name
+        in: formData
+        name: name
+        type: string
+      - description: password
+        in: formData
+        name: password
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: ""
+      tags:
+      - Users
 swagger: "2.0"

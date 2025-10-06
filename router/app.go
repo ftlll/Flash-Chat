@@ -17,6 +17,11 @@ func Router() *gin.Engine {
 	r.GET("/index", service.GetIndex)
 	r.GET("/users/getUsers", service.GetUsers)
 	r.POST("/users/createUser", service.CreateUser)
+	r.POST("/users/updateUser", service.UpdateUser)
 	r.DELETE("/users/deleteUser", service.DeleteUser)
+
+	// message
+	r.GET("/chat/sendMsg", service.SendMsg)
+	r.GET("/chat/sendUserMsg", service.SendUserMsg)
 	return r
 }

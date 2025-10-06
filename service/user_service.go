@@ -2,9 +2,11 @@ package service
 
 import (
 	"flashchat/models"
+	"flashchat/utils"
 	"net/http"
 	"strconv"
 
+	"github.com/asaskevich/govalidator"
 	"github.com/gin-gonic/gin"
 )
 
@@ -23,6 +25,39 @@ func GetUsers(c *gin.Context) {
 	users = models.GetUsers()
 	c.JSON(200, gin.H{
 		"message": users,
+	})
+}
+
+// @BasePath /api/v1
+
+// GetUser
+// @Description get user by name and password
+// @Tags Users
+// @Produce json
+//
+// @Success 200 {} json {code, message}
+//
+// @Router /users/getUsers [get]
+func GetUser(c *gin.Context) {
+	// user := models.UserBasic{}
+	// name := c.Query("name")
+	// password := c.Query("password")
+	// user = models.FindUserByName(name)
+	// if user.Identity == "" {
+	// 	c.JSON(400, gin.H{
+	// 		"message": "user does not exist",
+	// 	})
+	// 	return
+	// }
+	// match := utils.ValidPassword(password, user.Salt, user.Password)
+	// if !match {
+	// 	c.JSON(400, gin.H{
+	// 		"message": "login fails",
+	// 	})
+	// 	return
+	// }
+	c.JSON(200, gin.H{
+		"message": "user",
 	})
 }
 
@@ -62,7 +97,9 @@ func CreateUser(c *gin.Context) {
 			"error": "passwords are not matched",
 		})
 	}
-	user.Password = password
+
+	salt, _ := utils.GenerateSalt(31)
+	user.Password = utils.MakePassword(password, salt)
 	if result := models.CreateUsers(user); result.Error != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Failed to create user",
@@ -71,6 +108,48 @@ func CreateUser(c *gin.Context) {
 	}
 	c.JSON(200, gin.H{
 		"message": "user is successfully created",
+	})
+}
+
+// @BasePath /api/v1
+
+// Update User
+// @Description update existing user by ID
+// @Tags Users
+//
+// @Produce json
+// @Param id formData string false "id"
+// @Param name formData string false "name"
+// @Param password formData string false "password"
+// @Success 200 {} json {code, message}
+//
+// @Router /users/updateUser [post]
+func UpdateUser(c *gin.Context) {
+	user := models.UserBasic{}
+	id, _ := strconv.Atoi(c.PostForm("id"))
+	user.ID = uint(id)
+	user.Name = c.PostForm("name")
+	// user.Phone = c.PostForm("phone")
+	user.Email = c.PostForm("email")
+
+	salt, _ := utils.GenerateSalt(31)
+	plainpwd := c.PostForm("password")
+	user.Password = utils.MakePassword(plainpwd, salt)
+
+	_, err := govalidator.ValidateStruct(user)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Invalid phone or email",
+		})
+	}
+	if result := models.UpdateUser(user); result.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Failed to update user",
+		})
+		return
+	}
+	c.JSON(200, gin.H{
+		"message": "user is successfully updated",
 	})
 }
 
